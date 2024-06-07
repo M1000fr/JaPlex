@@ -5,6 +5,7 @@
 	"author": "M1000fr",
 	"dependencies": {
 		"@prisma/client": "^5.14.0",
+		"axios": "^1.7.2",
 		"canvas": "^2.11.2",
 		"discord.js": "^14.14.1",
 		"dotenv": "^16.4.5",
