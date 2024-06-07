@@ -16,7 +16,9 @@ import Module from "./Module";
 import Dotenv from "@/Utils/Dotenv";
 import { logger } from "@/Utils/logger";
 
-export default class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
+export default class ExtendedClient<
+	Ready extends boolean = boolean,
+> extends Client<Ready> {
 	public Modules: Map<string, Module> = new Map();
 	public Rest = new REST({ version: "9" }).setToken(Dotenv.DISCORD_TOKEN);
 	// @ts-ignore
@@ -32,7 +34,9 @@ export default class ExtendedClient<Ready extends boolean = boolean> extends Cli
 		for (const module of modules) {
 			this.Modules.set(module.name, module);
 			module.init(this, skipEvents);
-			logger.info(`[${module.name}] Module loaded ${skipEvents ? "without events" : ""}`);
+			logger.info(
+				`[${module.name}] Module loaded ${skipEvents ? "without events" : ""}`,
+			);
 		}
 
 		logger.info("[Modules] All modules have been loaded");
@@ -43,7 +47,9 @@ export default class ExtendedClient<Ready extends boolean = boolean> extends Cli
 		return this;
 	}
 
-	public async registerCommandsOnGuild(guildId: string): Promise<boolean | string | unknown> {
+	public async registerCommandsOnGuild(
+		guildId: string,
+	): Promise<boolean | string | unknown> {
 		const commandsOptions: (
 			| SlashCommandOptionsOnlyBuilder
 			| SlashCommandSubcommandBuilder
@@ -53,13 +59,21 @@ export default class ExtendedClient<Ready extends boolean = boolean> extends Cli
 		)[] = [];
 
 		this.Modules.forEach((module) => {
-			commandsOptions.push(...module.Commands.map((command) => command.options));
+			commandsOptions.push(
+				...module.Commands.map((command) => command.options),
+			);
 		});
 
 		try {
-			await this.Rest.put(Routes.applicationGuildCommands(this.user?.id as string, guildId), {
-				body: commandsOptions,
-			});
+			await this.Rest.put(
+				Routes.applicationGuildCommands(
+					this.user?.id as string,
+					guildId,
+				),
+				{
+					body: commandsOptions,
+				},
+			);
 			logger.info(`[Client] All commands have been registered`);
 			return true;
 		} catch (error) {

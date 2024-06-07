@@ -5,10 +5,11 @@ export interface JackettResult {
 	TitleLong: string;
 	CategoryDesc: string;
 	Indexer: string;
-	Size: string;
+	Size: number;
 	Seeders: number;
 	Peers: number;
 	Link: string;
+	Details: string;
 	Guid: string;
 	PublishDate: string;
 	Comments: string;

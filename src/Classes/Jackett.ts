@@ -1,0 +1,65 @@
+import { JackettResponse } from "@/Interfaces/Jackett/Response";
+import axios, { AxiosInstance } from "axios";
+
+export class JackettClient {
+	public api!: AxiosInstance;
+
+	constructor({ apikey }: { apikey: string }) {
+		this.api = axios.create({
+			maxBodyLength: Infinity,
+			baseURL: "https://jackett.m1000.fr/api/v2.0",
+			params: { apikey },
+		});
+	}
+
+	public async search({
+		query,
+		queryStrict = false,
+		order,
+		quality,
+	}: {
+		query: string;
+		queryStrict?: boolean;
+		quality?: string | null;
+		order: {
+			seeders: "asc" | "desc";
+		};
+	}): Promise<JackettResponse> {
+		var { data } = await this.api.get<JackettResponse>(
+			"/indexers/all/results",
+			{
+				params: { Query: query },
+			},
+		);
+
+		// Sort by seeders
+		data.Results = data.Results.sort((a: any, b: any) => {
+			return order.seeders === "asc"
+				? a.Seeders - b.Seeders
+				: b.Seeders - a.Seeders;
+		});
+
+		// Title must content the strictly query
+		if (queryStrict)
+			data.Results = data.Results.filter((result: any) =>
+				result.Title.toLowerCase().includes(query.toLowerCase()),
+			);
+
+		// remove duplicates by size of the torrent
+		const seen: any = {};
+
+		data.Results = data.Results.filter((result: any) => {
+			if (seen[result.Size]) return false;
+			seen[result.Size] = true;
+			return true;
+		});
+
+		// Filter by quality
+		if (quality)
+			data.Results = data.Results.filter((result: any) =>
+				result.Title.toLowerCase().includes(quality.toLowerCase()),
+			);
+
+		return data;
+	}
+}

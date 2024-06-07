@@ -1,22 +1,22 @@
 import Module from "@/Classes/Module";
+import { PlexCommand } from "./Commands/add";
 import { PingCommand } from "./Commands/ping";
-import { CommandHandlerEvent } from "./Events/commandHandler";
-import { HelloEvent } from "./Events/hello";
-import { RegisterUsersOnInit, UpdateUserOnLeave } from "./Events/users";
-import { WelcomeEvent } from "./Events/welcome";
-
+import { bookChangePageEvent } from "./Events/book";
 import {
 	RegisterChannelsOnCreate,
 	RegisterChannelsOnInit,
 	UnregisterChannelOnDelete,
 } from "./Events/channels";
-
-import { bookChangePageEvent } from "./Events/book";
+import { CommandHandlerEvent } from "./Events/commandHandler";
+import { downloadTorrentButtonEvent } from "./Events/download";
+import { HelloEvent } from "./Events/hello";
 import {
 	RegisterRoleOnCreate,
 	RegisterRolesOnInit,
 	UnregisterRoleOnDelete,
 } from "./Events/roles";
+import { RegisterUsersOnInit, UpdateUserOnLeave } from "./Events/users";
+import { WelcomeEvent } from "./Events/welcome";
 
 export const commonModule: Module = new Module("Common")
 	.addEvents([
@@ -40,5 +40,7 @@ export const commonModule: Module = new Module("Common")
 		RegisterRoleOnCreate,
 		RegisterRolesOnInit,
 		UnregisterRoleOnDelete,
+
+		downloadTorrentButtonEvent,
 	])
-	.addCommands([PingCommand]);
+	.addCommands([PingCommand, PlexCommand]);

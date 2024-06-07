@@ -5,4 +5,10 @@ export default interface Dotenv extends NodeJS.ProcessEnv {
 	DISCORD_GUILD_ID: string;
 
 	JACKETT_API_KEY: string;
+
+	ARIA2C_HOST: string;
+	ARIA2C_PORT: string;
+	ARIA2C_SECRET: string;
+	ARIA2C_PATH: string;
+	ARIA2C_SECURE: string;
 }

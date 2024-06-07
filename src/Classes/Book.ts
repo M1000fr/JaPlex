@@ -44,7 +44,11 @@ export class Book {
 					page.components.length - 4,
 				);
 
-			if (index === 1) {
+			// Disable buttons if it's the first or last page or if there's only one page
+			if (index === 1 && this.pages.size == 1) {
+				row.components[0].setDisabled(true);
+				row.components[1].setDisabled(true);
+			} else if (index === 1) {
 				row.components[0].setDisabled(true);
 				row.components[1].setDisabled(false);
 			} else if (index === this.pages.size) {
@@ -56,14 +60,6 @@ export class Book {
 
 			this.pages.set(index, page);
 		});
-
-		// If there is only one page, remove the buttons
-		if (this.pages.size === 1) {
-			this.pages.forEach((page) => {
-				page.components = [];
-				this.pages.set(1, page);
-			});
-		}
 
 		return this.pages;
 	}
