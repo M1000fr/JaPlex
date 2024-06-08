@@ -1,7 +1,9 @@
 import { TellStatus } from "@/Interfaces/Aria2c/tellStatus";
 import { aria2 } from "@/Services/aria2c.service";
+import Dotenv from "@/Utils/Dotenv";
 import { wait } from "@/Utils/wait";
 import { EventEmitter } from "events";
+import path from "node:path";
 
 export class Download extends EventEmitter<{
 	start: [TellStatus];
@@ -36,20 +38,19 @@ export class Download extends EventEmitter<{
 
 	constructor({
 		url,
-		path,
+		dir,
 		refreshRate,
 		seedAfterDownload,
 	}: {
 		url: string;
-		path: string;
+		dir: string;
 		refreshRate: number;
 		seedAfterDownload: boolean;
 	}) {
 		super();
 		this.url = url;
-		this.path = path;
-		this.serverPath = `/mnt/media/Movies/${path}`;
-		// this.serverPath = `/mnt/media/${path}`;
+		this.path = dir;
+		this.serverPath = path.join(Dotenv.ARIA2C_DOWNLOAD_PATH, dir);
 		this.refreshRate = refreshRate;
 		this.seedAfterDownload = seedAfterDownload;
 	}

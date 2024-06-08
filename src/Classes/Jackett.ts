@@ -4,10 +4,10 @@ import axios, { AxiosInstance } from "axios";
 export class JackettClient {
 	public api!: AxiosInstance;
 
-	constructor({ apikey }: { apikey: string }) {
+	constructor({ apikey, baseURL }: { apikey: string; baseURL: string }) {
 		this.api = axios.create({
 			maxBodyLength: Infinity,
-			baseURL: "https://jackett.m1000.fr/api/v2.0",
+			baseURL,
 			params: { apikey },
 		});
 	}

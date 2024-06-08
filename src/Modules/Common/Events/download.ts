@@ -37,7 +37,7 @@ export const downloadTorrentButtonEvent = new Event<"interactionCreate">(
 
 	const download = new Download({
 		url: downloadUrl,
-		path: title,
+		dir: title,
 		refreshRate: 2500,
 		seedAfterDownload: false,
 	});

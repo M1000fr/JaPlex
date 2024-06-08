@@ -17,4 +17,5 @@ aria2
 	})
 	.catch((err) => {
 		logger.error("[Aria2C] Failed to connect", err);
+		process.exit(1);
 	});
