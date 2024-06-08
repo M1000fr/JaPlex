@@ -51,13 +51,13 @@ export class Book {
 			// Disable buttons if it's the first or last page or if there's only one page
 			if (index === 1 && this.pages.size == 1) {
 				row.components[0].setDisabled(true);
-				row.components[1].setDisabled(true);
+				row.components[2].setDisabled(true);
 			} else if (index === 1) {
 				row.components[0].setDisabled(true);
-				row.components[1].setDisabled(false);
+				row.components[2].setDisabled(false);
 			} else if (index === this.pages.size) {
 				row.components[0].setDisabled(false);
-				row.components[1].setDisabled(true);
+				row.components[2].setDisabled(true);
 			}
 
 			(page.components as MessageComponent[])?.push(row);
