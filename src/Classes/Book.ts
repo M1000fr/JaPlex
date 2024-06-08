@@ -29,12 +29,16 @@ export class Book {
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
 				new ButtonBuilder()
 					.setCustomId("previous")
-					.setLabel("Previous")
-					.setStyle(ButtonStyle.Primary),
+					.setEmoji("⬅️")
+					.setStyle(ButtonStyle.Secondary),
+				new ButtonBuilder()
+					.setCustomId("cancel")
+					.setEmoji("❌")
+					.setStyle(ButtonStyle.Secondary),
 				new ButtonBuilder()
 					.setCustomId("next")
-					.setLabel("Next")
-					.setStyle(ButtonStyle.Primary),
+					.setEmoji("➡️")
+					.setStyle(ButtonStyle.Secondary),
 			]);
 
 			if (!page.components) page.components = [];

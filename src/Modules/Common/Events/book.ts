@@ -20,6 +20,10 @@ export const bookChangePageEvent = new Event<"interactionCreate">(
 		page = book.nextPage();
 	} else if (interaction.customId === "previous") {
 		page = book.previousPage();
+	} else if (interaction.customId === "cancel") {
+		books.delete(interaction.message.id);
+		await interaction.message.delete();
+		return;
 	}
 
 	if (!page) return;

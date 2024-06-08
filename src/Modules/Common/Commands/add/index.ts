@@ -30,7 +30,7 @@ export const PlexCommand = new Command("plex", plexCommandOptions).setHandler({
 		const search = await JackettService.search({
 			query: title,
 			order: { seeders: "desc" },
-			queryStrict: true,
+			queryStrict: false,
 			quality,
 		});
 
