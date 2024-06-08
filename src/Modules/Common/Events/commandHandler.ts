@@ -64,9 +64,7 @@ export const CommandHandlerEvent = new Event<"interactionCreate">(
 
 			if (!userHasPermissions.hasPermission) {
 				interaction.reply({
-					content: `You don't have permission to use this command\nRequired permissions: \`${userHasPermissions.missingPermissions.join(
-						", ",
-					)}\``,
+					content: `You don't have permission to use this command${userHasPermissions.missingPermissions.length > 0 ? `\nRequired permissions: \`${userHasPermissions.missingPermissions.join(", ")}\`` : ""}${userHasPermissions.orRequiredOnePermission.length > 0 ? `\nOr required one of: \`${userHasPermissions.orRequiredOnePermission.join(", ")}\`` : ""}`,
 					ephemeral: true,
 				});
 

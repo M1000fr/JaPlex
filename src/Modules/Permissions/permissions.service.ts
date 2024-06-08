@@ -29,6 +29,7 @@ export class PermissionsService {
 	}): Promise<{
 		hasPermission: boolean;
 		missingPermissions: string[];
+		orRequiredOnePermission: string[];
 	}> {
 		await Prisma.user.upsert({
 			where: { id: member.id },
@@ -51,29 +52,39 @@ export class PermissionsService {
 
 		const userPermissionsFlat = userPermissions.flat();
 
-		const hasAllPermissions = permissions.and.every((permission) =>
-			userPermissionsFlat.includes(PERMISSIONS[permission]),
-		);
+		const hasAllAndPermissions =
+				permissions.and.length > 0
+					? permissions.and.every((permission) =>
+							userPermissionsFlat.includes(
+								PERMISSIONS[permission],
+							),
+						)
+					: null,
+			hasAllOrPermissions = permissions.or.some((permission) =>
+				userPermissionsFlat.includes(PERMISSIONS[permission]),
+			);
 
-		if (hasAllPermissions)
+		if (hasAllAndPermissions || hasAllOrPermissions) {
 			return {
 				hasPermission: true,
 				missingPermissions: [],
+				orRequiredOnePermission: [],
 			};
+		}
 
-		const hasAnyPermission = permissions.or.some((permission) =>
-			userPermissionsFlat.includes(PERMISSIONS[permission]),
-		);
-
-		if (hasAnyPermission)
-			return {
-				hasPermission: true,
-				missingPermissions: [],
-			};
+		const missingAndPermissions = permissions.and.filter(
+				(permission) =>
+					!userPermissionsFlat.includes(PERMISSIONS[permission]),
+			),
+			missingOrPermissions = permissions.or.filter(
+				(permission) =>
+					!userPermissionsFlat.includes(PERMISSIONS[permission]),
+			);
 
 		return {
 			hasPermission: false,
-			missingPermissions: permissions.and || permissions.or,
+			missingPermissions: missingAndPermissions,
+			orRequiredOnePermission: missingOrPermissions,
 		};
 	}
 }
