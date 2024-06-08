@@ -1,5 +1,6 @@
 import Event from "@/Classes/Event";
 import { tmdb } from "@/Services/tmdb.service";
+import Dotenv from "@/Utils/Dotenv";
 
 export const MovieAutocomplete = new Event<"interactionCreate">(
 	"interactionCreate",
@@ -19,6 +20,8 @@ export const MovieAutocomplete = new Event<"interactionCreate">(
 	// Search for movies from TMDB
 	const movies = await tmdb.search.movies({
 		query: focus,
+		language: Dotenv.PLEX_LANGUAGE,
+		include_adult: true,
 	});
 	if (!movies) return;
 
