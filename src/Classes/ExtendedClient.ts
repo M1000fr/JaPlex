@@ -21,10 +21,8 @@ export default class ExtendedClient<
 > extends Client<Ready> {
 	public Modules: Map<string, Module> = new Map();
 	public Rest = new REST({ version: "9" }).setToken(Dotenv.DISCORD_TOKEN);
-	// @ts-ignore
-	public guild: Guild;
-	// @ts-ignore
-	public member: GuildMember;
+	public guild!: Guild;
+	public member!: GuildMember;
 
 	constructor(clientOptions: ClientOptions) {
 		super(clientOptions);
