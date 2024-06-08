@@ -5,7 +5,7 @@ export const MovieAutocomplete = new Event<"interactionCreate">(
 	"interactionCreate",
 ).setHandler(async (_client, interaction) => {
 	if (
-		!interaction.isAutocomplete() ||
+		!interaction?.isAutocomplete() ||
 		interaction.commandName !== "plex" ||
 		interaction.options.getSubcommand() !== "add" ||
 		interaction.options.getSubcommandGroup() !== "movie"
@@ -14,6 +14,7 @@ export const MovieAutocomplete = new Event<"interactionCreate">(
 
 	// Get the focused option
 	const focus = interaction.options.getFocused();
+	if (!focus) return;
 
 	// Search for movies from TMDB
 	const movies = await tmdb.search.movies({

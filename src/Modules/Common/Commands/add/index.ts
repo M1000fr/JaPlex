@@ -63,6 +63,14 @@ export const PlexCommand = new Command("plex", plexCommandOptions).setHandler({
 						},
 						fields: [
 							{
+								// title
+								name: "✍️ Title",
+								value: interaction.options.getString(
+									"title",
+									true,
+								),
+							},
+							{
 								name: "🙍 Seeders",
 								value: result.Seeders.toString(),
 								inline: true,
