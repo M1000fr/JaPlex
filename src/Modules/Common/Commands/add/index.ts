@@ -40,8 +40,6 @@ export const PlexCommand = new Command("plex", plexCommandOptions).setHandler({
 						.Metadata,
 			);
 
-		console.log(fetchMovieOnPlex);
-
 		if (fetchMovieOnPlex && fetchMovieOnPlex[0].title === title)
 			return "Movie already exists in Plex";
 
