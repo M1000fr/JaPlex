@@ -61,7 +61,7 @@ export class Download extends EventEmitter<{
 			})) as string;
 
 			// Trying to get the status of the download of the torrent
-			await wait(500);
+			await wait(1000);
 			this.torrentStatus = await aria2.call("tellStatus", this.torrentId);
 
 			// Checking if the download of the torrent is followed by another download
@@ -70,7 +70,7 @@ export class Download extends EventEmitter<{
 				this.torrentStatus.files[0].path == "" &&
 				!this.torrentStatus.followedBy
 			) {
-				await wait(500);
+				await wait(1000);
 				this.torrentStatus = await aria2.call(
 					"tellStatus",
 					this.torrentId,
