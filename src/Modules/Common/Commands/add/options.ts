@@ -15,7 +15,8 @@ export const plexCommandOptions = new SlashCommandBuilder()
 						option
 							.setName("title")
 							.setDescription("Title of the movie")
-							.setRequired(true),
+							.setRequired(true)
+							.setAutocomplete(true),
 					)
 					.addStringOption((option) =>
 						option

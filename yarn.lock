@@ -398,6 +398,13 @@ create-require@^1.1.0:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
+cross-fetch@^3.1.4:
+  version "3.1.8"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.8.tgz#0327eba65fd68a7d119f8fb2bf9334a1a7956f82"
+  integrity sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==
+  dependencies:
+    node-fetch "^2.6.12"
+
 dateformat@^4.6.3:
   version "4.6.3"
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-4.6.3.tgz#556fa6497e5217fedb78821424f8a1c22fa3f4b5"
@@ -789,7 +796,7 @@ node-aria2@^1.1.0:
     events "^3.3.0"
     ws "^8.13.0"
 
-node-fetch@^2.6.7:
+node-fetch@^2.6.12, node-fetch@^2.6.7:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.7.0.tgz#d0f0fa6e3e2dc1d27efcd8ad99d550bda94d187d"
   integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
@@ -1130,6 +1137,13 @@ thread-stream@^3.0.0:
   integrity sha512-cBL4xF2A3lSINV4rD5tyqnKH4z/TgWPvT+NaVhJDSwK962oo/Ye7cHSMbDzwcu7tAE1SfU6Q4XtV6Hucmi6Hlw==
   dependencies:
     real-require "^0.2.0"
+
+tmdb-ts@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/tmdb-ts/-/tmdb-ts-1.8.0.tgz#ef6d29e3fdbec0a3af813bb030e79c6c8b1adaf6"
+  integrity sha512-Y1M2gLrN9V0VA06fPQFtYOUpnMT0ySTOQM2gpysj2wXMMI8jUMeoctERt9F0C3lhJ38kwMXuOwZuyHiAtCAAvA==
+  dependencies:
+    cross-fetch "^3.1.4"
 
 to-regex-range@^5.0.1:
   version "5.0.1"

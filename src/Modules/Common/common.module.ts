@@ -17,6 +17,7 @@ import {
 } from "./Events/roles";
 import { RegisterUsersOnInit, UpdateUserOnLeave } from "./Events/users";
 import { WelcomeEvent } from "./Events/welcome";
+import { MovieAutocomplete } from "./Events/movieAutocomplete";
 
 export const commonModule: Module = new Module("Common")
 	.addEvents([
@@ -42,5 +43,6 @@ export const commonModule: Module = new Module("Common")
 		UnregisterRoleOnDelete,
 
 		downloadTorrentButtonEvent,
+		MovieAutocomplete,
 	])
 	.addCommands([PingCommand, PlexCommand]);
