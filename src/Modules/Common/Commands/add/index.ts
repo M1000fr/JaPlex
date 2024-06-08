@@ -20,7 +20,7 @@ export const PlexCommand = new Command("plex", plexCommandOptions).setHandler({
 	sub: "add",
 	permission: {
 		or: ["CMDS_ALL"],
-		and: [],
+		and: ["CMDS_PLEX_ADD_MOVIE"],
 	},
 	handler: new CommandHandler(async (interaction) => {
 		await interaction.deferReply();
