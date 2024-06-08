@@ -1,147 +1,16 @@
 import Event from "@/Classes/Event";
 import "@/Services/aria2c.service";
-import { aria2 } from "@/Services/aria2c.service";
 import {
 	ActionRowBuilder,
 	Colors,
-	Embed,
 	EmbedBuilder,
-	Message,
 	ModalActionRowComponentBuilder,
 	ModalBuilder,
 	TextInputBuilder,
 	TextInputStyle,
 } from "discord.js";
-import moment from "moment";
-
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-function downloadTorrent(
-	downloadUrl: string,
-	folderName: string,
-	message: Message,
-	messageEmbed: Embed,
-	type: "Movie" | "TV Show",
-) {
-	const dir = `/mnt/media/${type === "Movie" ? "Movies" : "Shows"}/${folderName}`;
-
-	aria2
-		.call("addUri", [downloadUrl], { dir })
-		.then(async (res) => {
-			await message.edit({
-				embeds: [
-					{
-						author: messageEmbed.author!,
-						color: Colors.Orange,
-						description: `Downloading torrent`,
-					},
-				],
-				components: [],
-			});
-
-			const t1 = moment();
-
-			await wait(1000);
-
-			const torrentFileStatus = await aria2.call("tellStatus", res);
-
-			const fetchTorrentContentsStatusInterval: NodeJS.Timeout =
-				setInterval(async () => {
-					const filesStatus = await aria2.call(
-						"tellStatus",
-						torrentFileStatus.followedBy[0],
-					);
-
-					if (filesStatus.status == "error") {
-						await message.edit({
-							embeds: [
-								{
-									author: messageEmbed.author!,
-									color: Colors.Red,
-									description: filesStatus.errorMessage,
-								},
-							],
-							components: [],
-						});
-
-						return clearInterval(
-							fetchTorrentContentsStatusInterval,
-						);
-					} else if (filesStatus.seeder == "true") {
-						await message.edit({
-							embeds: [
-								{
-									author: messageEmbed.author!,
-									color: Colors.Green,
-									description: `Downloaded torrent`,
-									fields: [
-										{
-											name: "🕒 Time Taken",
-											value: `${moment().diff(t1, "seconds")} seconds`,
-											inline: true,
-										},
-										{
-											name: "📁 Folder",
-											value: dir,
-											inline: true,
-										},
-									],
-								},
-							],
-							components: [],
-						});
-
-						// remove the torrent from aria2
-						await aria2.call("remove", filesStatus.gid);
-
-						return clearInterval(
-							fetchTorrentContentsStatusInterval,
-						);
-					}
-
-					const embedDownload = new EmbedBuilder({
-						author: messageEmbed.author!,
-						color: Colors.Orange,
-						description: `Downloading torrent`,
-					});
-
-					const filesFields = filesStatus.files.map(
-						(file: {
-							completedLength: string;
-							length: string;
-							path: string;
-						}) => ({
-							name: file.path.split("/").pop(),
-							value:
-								Math.round(
-									(Number(file.completedLength) /
-										Number(file.length)) *
-										100,
-								).toString() + "%",
-						}),
-					);
-
-					embedDownload.addFields(filesFields);
-
-					await message.edit({
-						embeds: [embedDownload],
-						components: [],
-					});
-				}, 2500);
-		})
-		.catch(async (err) => {
-			console.error(err);
-			await message.edit({
-				embeds: [
-					{
-						description: `Failed to download torrent`,
-						color: Colors.Red,
-					},
-				],
-				components: [],
-			});
-		});
-}
+import { Download } from "@/Classes/Download";
+import { ProgressBar } from "@/Classes/progressBar";
 
 export const downloadTorrentButtonEvent = new Event<"interactionCreate">(
 	"interactionCreate",
@@ -196,6 +65,91 @@ export const downloadTorrentButtonEvent = new Event<"interactionCreate">(
 		await interaction.deferUpdate();
 
 		const folderName = interaction.fields.getTextInputValue("folderName");
-		downloadTorrent(downloadUrl, folderName, message, embedData, "Movie");
+
+		const download = new Download({
+			url: downloadUrl,
+			path: folderName,
+			refreshRate: 2500,
+			seedAfterDownload: false,
+		});
+
+		download.start();
+
+		const embed = new EmbedBuilder();
+
+		download.on("start", async () => {
+			embed
+				.setTitle(
+					download.torrentStatus?.files[0].path.split("/").pop() ||
+						"`Unknown file name`",
+				)
+				.setDescription("Download started")
+				.setColor(Colors.Blue);
+
+			await interaction.editReply({
+				embeds: [embed],
+				components: [],
+			});
+		});
+
+		download.on("downloading", async () => {
+			const progressBars = download.contentFilesStatus.map((file) => {
+				const progressBar = new ProgressBar(
+					file.path.split("/").pop() || "Unknown file name",
+					file.totalFilesLength,
+				);
+
+				progressBar.update(file.completedFilesLength);
+
+				return progressBar.toString();
+			});
+
+			embed
+				.setTitle(
+					download.torrentStatus?.files[0].path.split("/").pop() ||
+						"`Unknown file name`",
+				)
+				.setDescription(
+					`Downloading\n\`\`\`${progressBars.join("\n")}\`\`\``,
+				)
+				.setColor(Colors.Orange);
+
+			await interaction.editReply({
+				embeds: [embed],
+				components: [],
+			});
+		});
+
+		download.on("finished", async () => {
+			embed
+				.setTitle(
+					download.torrentStatus?.files[0].path.split("/").pop() ||
+						"`Unknown file name`",
+				)
+				.setDescription("Download finished")
+				.setColor(Colors.Green);
+
+			await interaction.editReply({
+				embeds: [embed],
+				components: [],
+			});
+		});
+
+		download.on("error", async (status) => {
+			embed
+				.setTitle(
+					download.torrentStatus?.files[0].path.split("/").pop() ||
+						"`Unknown file name`",
+				)
+				.setDescription(
+					`An error occurred\n\`\`\`${status.errorMessage}\`\`\``,
+				)
+				.setColor(Colors.Red);
+
+			await interaction.editReply({
+				embeds: [embed],
+				components: [],
+			});
+		});
 	});
 });
