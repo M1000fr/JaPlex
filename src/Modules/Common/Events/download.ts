@@ -3,6 +3,7 @@ import Event from "@/Classes/Event";
 import { ProgressBar } from "@/Classes/progressBar";
 import "@/Services/aria2c.service";
 import { Colors, EmbedBuilder } from "discord.js";
+import path from "node:path";
 
 export const downloadTorrentButtonEvent = new Event<"interactionCreate">(
 	"interactionCreate",
@@ -37,7 +38,7 @@ export const downloadTorrentButtonEvent = new Event<"interactionCreate">(
 
 	const download = new Download({
 		url: downloadUrl,
-		dir: title,
+		dir: path.join("/Movies", title),
 		refreshRate: 2500,
 		seedAfterDownload: false,
 	});

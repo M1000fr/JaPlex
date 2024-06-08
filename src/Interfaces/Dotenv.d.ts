@@ -15,4 +15,8 @@ export default interface Dotenv extends NodeJS.ProcessEnv {
 	ARIA2C_PATH: string;
 	ARIA2C_DOWNLOAD_PATH: string;
 	ARIA2C_SECURE: string;
+
+	PLEX_API_URL: string;
+	PLEX_API_KEY: string;
+	PLEX_LANGUAGE: string;
 }

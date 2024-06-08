@@ -87,24 +87,36 @@ export const CommandHandlerEvent = new Event<"interactionCreate">(
 			}
 
 			if (handlerOutput === false) {
-				interaction.reply({
-					content: "An error occurred while executing the command",
-					ephemeral: true,
-				});
+				!interaction.deferred
+					? interaction.reply({
+							content:
+								"An error occurred while executing the command",
+							ephemeral: true,
+						})
+					: interaction.editReply({
+							content:
+								"An error occurred while executing the command",
+						});
 
 				return false;
 			} else if (typeof handlerOutput === "string") {
-				interaction.reply({
-					content: `⚠️` + handlerOutput,
-					ephemeral: true,
-				});
+				!interaction.deferred
+					? interaction.reply({
+							content: `⚠️` + handlerOutput,
+							ephemeral: true,
+						})
+					: interaction.editReply({ content: `⚠️` + handlerOutput });
 
 				return false;
 			} else if (typeof handlerOutput == "object") {
-				interaction.reply({
-					ephemeral: true,
-					...(handlerOutput as BaseMessageOptions),
-				});
+				!interaction.deferred
+					? interaction.reply({
+							ephemeral: true,
+							...(handlerOutput as BaseMessageOptions),
+						})
+					: interaction.editReply({
+							...(handlerOutput as BaseMessageOptions),
+						});
 				return true;
 			} else {
 				return true;
