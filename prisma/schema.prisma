@@ -8,12 +8,7 @@ datasource db {
 }
 
 model User {
-    id                          String       @id
-    leave_date                  DateTime?
-    leave_count                 Int          @default(0)
-    ModeratorPunishment         Punishment[] @relation("Moderator")
-    ModeratorDisabledPunishment Punishment[] @relation("ModeratorDisabled")
-    UserPunishment              Punishment[] @relation("User")
+    id String @id
 }
 
 model Permission {
@@ -38,69 +33,7 @@ model Role {
 }
 
 model RoleAssignment {
-    id          Int                @id @default(autoincrement())
-    Role        Role               @relation(fields: [roleId], references: [id])
-    roleId      String
-    assignement RoleAssignmentType
-}
-
-model Channel {
-    id                String              @id
-    ChannelAssignment ChannelAssignment[]
-}
-
-model ChannelAssignment {
-    id          Int                   @id @default(autoincrement())
-    Channel     Channel               @relation(fields: [channelId], references: [id])
-    channelId   String
-    assignement ChannelAssignmentType
-}
-
-model Punishment {
-    id                  Int             @id @default(autoincrement())
-    type                PunishementType
-    Moderator           User            @relation("Moderator", fields: [moderatorId], references: [id])
-    moderatorId         String
-    ModeratorDisabled   User?           @relation("ModeratorDisabled", fields: [moderatorDisabledId], references: [id])
-    moderatorDisabledId String?
-    User                User            @relation("User", fields: [userId], references: [id])
-    userId              String
-    reason              String
-    addedDate           DateTime        @default(now())
-    endDate             DateTime?
-}
-
-model PunishmentSentence {
-    id             Int                    @id @default(autoincrement())
-    triggerType    PunishementTriggerType
-    triggerValue   Int
-    sentenceType   PunishementType
-    sentenceTime   String
-    sentenceReason String
-}
-
-enum PunishementTriggerType {
-    MUTE
-    WARN
-}
-
-enum PunishementType {
-    BAN
-    KICK
-    MUTE
-    WARN
-}
-
-enum RoleAssignmentType {
-    ADD_ON_GUILDMEMBER_ADD
-    ADD_ON_GUILDMEMBER_MUTE
-}
-
-enum ChannelAssignmentType {
-    WELCOME_MESSAGE
-    GUILDMEMBER_MUTE
-    GUILDMEMBER_KICK
-    GUILDMEMBER_BAN
-    GUILDMEMBER_WARN
-    DISALOW_COMMANDS
+    id     Int    @id @default(autoincrement())
+    Role   Role   @relation(fields: [roleId], references: [id])
+    roleId String
 }

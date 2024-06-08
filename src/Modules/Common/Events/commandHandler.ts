@@ -13,28 +13,6 @@ export const CommandHandlerEvent = new Event<"interactionCreate">(
 ).setHandler(async (client, interaction) => {
 	if (!interaction.isChatInputCommand()) return false;
 
-	const dissalowedChannels = await Prisma.channelAssignment.findMany({
-		where: { assignement: "DISALOW_COMMANDS" },
-	});
-
-	if (
-		dissalowedChannels.some(
-			(channel) => channel.channelId === interaction.channelId,
-		)
-	) {
-		interaction.reply({
-			embeds: [
-				new EmbedBuilder()
-					.setTitle("・Command")
-					.setColor(Colors.Red)
-					.setDescription("Commands are disallowed in this channel"),
-			],
-			ephemeral: true,
-		});
-
-		return false;
-	}
-
 	for (const [_ModuleName, Module] of client.Modules) {
 		for (const command of Module.Commands.filter(
 			(command) => command.name === interaction.commandName,

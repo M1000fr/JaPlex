@@ -28,25 +28,3 @@ export const RegisterUsersOnInit = new Event<"ready">("ready").setHandler(
 		});
 	},
 );
-
-export const UpdateUserOnLeave = new Event<"guildMemberRemove">(
-	"guildMemberRemove",
-).setHandler(async (client, member) => {
-	const user = await Prisma.user.findUnique({
-		where: {
-			id: member.id,
-		},
-	});
-
-	if (!user) return false;
-
-	await Prisma.user.update({
-		where: {
-			id: member.id,
-		},
-		data: {
-			leave_date: moment().toISOString(),
-			leave_count: user.leave_count + 1,
-		},
-	});
-});
