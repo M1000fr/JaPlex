@@ -12,7 +12,8 @@ export const downloadTorrentButtonEvent = new Event<"interactionCreate">(
 	if (interaction.customId !== "download") return false;
 
 	const message = await interaction.message.fetch();
-	if (message.author.id != interaction.member?.user.id) return false;
+	if (message.interaction?.user.id != interaction.member?.user.id)
+		return false;
 
 	const embedData = message?.embeds[0],
 		title = embedData?.fields.find((field) =>
