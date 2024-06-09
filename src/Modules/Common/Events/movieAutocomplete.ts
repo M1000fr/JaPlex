@@ -28,8 +28,11 @@ export const MovieAutocomplete = new Event<"interactionCreate">(
 	// Limit to 25 movies
 	const options = movies.results
 		.map((movie) => ({
-			name: movie.title,
-			value: movie.title,
+			name:
+				movie.title.length > 95
+					? movie.title.slice(0, 95) + "..."
+					: movie.title,
+			value: movie.id.toString(),
 		}))
 		.slice(0, 25);
 

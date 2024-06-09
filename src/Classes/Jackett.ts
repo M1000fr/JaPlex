@@ -17,10 +17,12 @@ export class JackettClient {
 		queryStrict = false,
 		order,
 		quality,
+		category,
 	}: {
 		query: string;
 		queryStrict?: boolean;
 		quality?: string | null;
+		category?: number[];
 		order: {
 			seeders: "asc" | "desc";
 		};
@@ -28,7 +30,10 @@ export class JackettClient {
 		var { data } = await this.api.get<JackettResponse>(
 			"/indexers/all/results",
 			{
-				params: { Query: query },
+				params: {
+					Query: query,
+					Category: category,
+				},
 			},
 		);
 

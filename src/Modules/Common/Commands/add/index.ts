@@ -12,6 +12,8 @@ import {
 
 import { plexCommandOptions } from "./options";
 import { plex } from "@/Services/plex.service";
+import { tmdb } from "@/Services/tmdb.service";
+import Dotenv from "@/Utils/Dotenv";
 
 const qualityRegex = /\b(?:4K|[0-9]{3,4}p)\b/i;
 
@@ -25,13 +27,21 @@ export const PlexCommand = new Command("plex", plexCommandOptions).setHandler({
 	handler: new CommandHandler(async (interaction) => {
 		await interaction.deferReply();
 
-		const title = interaction.options.getString("title", true),
+		const TMDBid = Number(interaction.options.getString("title", true)),
 			quality = interaction.options.getString("quality", false);
+
+		const movieData = await tmdb.movies.details(
+			TMDBid,
+			undefined,
+			Dotenv.PLEX_LANGUAGE,
+		);
+
+		if (!movieData) return "No results found";
 
 		// check if the movie is already in plex
 		const fetchMovieOnPlex = await plex
 			.search({
-				query: title,
+				query: movieData.title,
 				limit: 1,
 			})
 			.then(
@@ -40,14 +50,15 @@ export const PlexCommand = new Command("plex", plexCommandOptions).setHandler({
 						.Metadata,
 			);
 
-		if (fetchMovieOnPlex && fetchMovieOnPlex[0].title === title)
+		if (fetchMovieOnPlex && fetchMovieOnPlex[0].title === movieData.title)
 			return "Movie already exists in Plex";
 
 		const search = await JackettService.search({
-			query: title,
+			query: movieData.title,
 			order: { seeders: "desc" },
 			queryStrict: false,
 			quality,
+			category: [2000, 2020],
 		});
 
 		if (search.Results.length === 0) return "No results found";
@@ -78,10 +89,7 @@ export const PlexCommand = new Command("plex", plexCommandOptions).setHandler({
 							{
 								// title
 								name: "✍️ Title",
-								value: interaction.options.getString(
-									"title",
-									true,
-								),
+								value: movieData.title,
 							},
 							{
 								name: "🙍 Seeders",
@@ -98,6 +106,11 @@ export const PlexCommand = new Command("plex", plexCommandOptions).setHandler({
 							{
 								name: "📽️ Quality",
 								value: quality ? quality[0] : "Unknown",
+								inline: true,
+							},
+							{
+								name: "🕒 Runtime",
+								value: `${movieData.runtime} minutes`,
 								inline: true,
 							},
 							{
