@@ -12,6 +12,7 @@ import {
 	RegisterRolesOnInit,
 	UnregisterRoleOnDelete,
 } from "./Events/roles";
+import { ShowAutocomplete } from "./Events/showAutocomplete";
 import { RegisterUsersOnInit } from "./Events/users";
 
 export const commonModule: Module = new Module("Common")
@@ -31,6 +32,8 @@ export const commonModule: Module = new Module("Common")
 		UnregisterRoleOnDelete,
 
 		downloadTorrentButtonEvent,
+
 		MovieAutocomplete,
+		ShowAutocomplete,
 	])
 	.addCommands([PingCommand, PlexCommand]);

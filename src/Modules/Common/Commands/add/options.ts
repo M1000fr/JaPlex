@@ -39,17 +39,18 @@ export const plexCommandOptions = new SlashCommandBuilder()
 				subcommand
 					.setName("add")
 					.setDescription("Add a show to Plex")
-					.addStringOption((option) =>
+					.addIntegerOption((option) =>
 						option
-							.setName("title")
-							.setDescription("Title of the show")
+							.setName("show_id")
+							.setDescription("Show ID from TMDB")
+							.setAutocomplete(true)
 							.setRequired(true),
 					)
 					.addIntegerOption((option) =>
 						option
 							.setName("season")
 							.setDescription("Season number")
-							.setRequired(true),
+							.setRequired(false),
 					)
 					.addIntegerOption((option) =>
 						option

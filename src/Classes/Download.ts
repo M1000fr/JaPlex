@@ -42,13 +42,13 @@ export class Download extends EventEmitter<{
 	constructor({
 		url,
 		dir,
-		refreshRate,
-		seedAfterDownload,
+		refreshRate = 2500,
+		seedAfterDownload = false,
 	}: {
 		url: string;
 		dir: string;
-		refreshRate: number;
-		seedAfterDownload: boolean;
+		refreshRate?: number;
+		seedAfterDownload?: boolean;
 	}) {
 		super();
 		this.url = url;

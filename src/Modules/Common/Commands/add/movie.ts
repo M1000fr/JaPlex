@@ -19,18 +19,18 @@ export const addMovieHandler = new CommandHandler(async (interaction) => {
 	const TMDBid = Number(interaction.options.getString("title", true)),
 		quality = interaction.options.getString("quality", false);
 
-	const movieData = await tmdb.movies.details(
+	const movieDataTMDB = await tmdb.movies.details(
 		TMDBid,
 		undefined,
 		Dotenv.PLEX_LANGUAGE,
 	);
 
-	if (!movieData) return "No results found";
+	if (!movieDataTMDB) return "No results found";
 
 	// check if the movie is already in plex
 	const fetchMovieOnPlex = await plex
 		.search({
-			query: movieData.title,
+			query: movieDataTMDB.title,
 			limit: 1,
 		})
 		.then(
@@ -39,11 +39,11 @@ export const addMovieHandler = new CommandHandler(async (interaction) => {
 					.Metadata,
 		);
 
-	if (fetchMovieOnPlex && fetchMovieOnPlex[0].title === movieData.title)
+	if (fetchMovieOnPlex && fetchMovieOnPlex[0].title === movieDataTMDB.title)
 		return "Movie already exists in Plex";
 
 	const search = await JackettService.search({
-		query: movieData.title,
+		query: movieDataTMDB.title,
 		order: { seeders: "desc" },
 		queryStrict: false,
 		quality,
@@ -71,13 +71,13 @@ export const addMovieHandler = new CommandHandler(async (interaction) => {
 					color: Colors.Blue,
 					author: {
 						name: result.Title,
-						url: result.Details,
+						url: movieDataTMDB.homepage,
 					},
 					fields: [
 						{
 							// title
 							name: "✍️ Title",
-							value: movieData.title,
+							value: movieDataTMDB.title,
 						},
 						{
 							name: "🙍 Seeders",
@@ -98,7 +98,7 @@ export const addMovieHandler = new CommandHandler(async (interaction) => {
 						},
 						{
 							name: "🕒 Runtime",
-							value: `${movieData.runtime} minutes`,
+							value: `${movieDataTMDB.runtime} minutes`,
 							inline: true,
 						},
 						{

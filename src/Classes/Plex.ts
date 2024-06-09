@@ -24,13 +24,25 @@ export class PlexClient {
 		});
 	}
 
-	public async search({ query, limit }: { query: string; limit: number }) {
-		const { data } = await this.api.get<PlexSearch>("/hubs/search", {
+	public async search({
+		query,
+		limit,
+		type = "movie",
+	}: {
+		query: string;
+		limit: number;
+		type?: "movie" | "show";
+	}) {
+		var { data } = await this.api.get<PlexSearch>("/hubs/search", {
 			params: {
 				query,
 				limit,
 			},
 		});
+
+		data.MediaContainer.Hub = data.MediaContainer.Hub.filter(
+			(h) => h.type === type,
+		);
 
 		return data;
 	}
