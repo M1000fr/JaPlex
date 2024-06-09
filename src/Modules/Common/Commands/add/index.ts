@@ -89,7 +89,7 @@ export const PlexCommand = new Command("plex", plexCommandOptions).setHandler({
 								inline: true,
 							},
 							{
-								name: "📏 Size",
+								name: "📦 Total Files Size",
 								value:
 									// Convert bytes to GB and round to 2 decimal places
 									`${(result.Size / 1024 / 1024 / 1024).toFixed(2)} GB`,

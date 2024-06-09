@@ -46,8 +46,6 @@ export const downloadTorrentButtonEvent = new Event<"interactionCreate">(
 		seedAfterDownload: false,
 	});
 
-	download.start();
-
 	const embed = new EmbedBuilder();
 
 	download.on("start", async () => {
@@ -85,6 +83,12 @@ export const downloadTorrentButtonEvent = new Event<"interactionCreate">(
 			.setDescription(
 				`Downloading\n\`\`\`${progressBars.join("\n")}\`\`\``,
 			)
+			.setFields([
+				{
+					name: "🤵 Peer count",
+					value: download.contentPeers.length.toString(),
+				},
+			])
 			.setColor(Colors.Orange);
 
 		await message.edit({
@@ -100,7 +104,14 @@ export const downloadTorrentButtonEvent = new Event<"interactionCreate">(
 					"`Unknown file name`",
 			)
 			.setDescription("Download finished")
-			.setColor(Colors.Green);
+
+			.setColor(Colors.Green)
+			.setFields([
+				{
+					name: "📦 Total Files Size",
+					value: download.totalContentFilesSizeHumanized,
+				},
+			]);
 
 		await message.edit({
 			embeds: [embed],
@@ -124,4 +135,6 @@ export const downloadTorrentButtonEvent = new Event<"interactionCreate">(
 			components: [],
 		});
 	});
+
+	download.start();
 });

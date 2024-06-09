@@ -1,3 +1,4 @@
+import { Peers } from "@/Interfaces/Aria2c/Peers";
 import { TellStatus } from "@/Interfaces/Aria2c/tellStatus";
 import { aria2 } from "@/Services/aria2c.service";
 import Dotenv from "@/Utils/Dotenv";
@@ -6,7 +7,7 @@ import { EventEmitter } from "events";
 import path from "node:path";
 
 export class Download extends EventEmitter<{
-	start: [TellStatus];
+	start: [void];
 	error: [TellStatus];
 	seeded: [TellStatus];
 	downloading: [TellStatus];
@@ -25,6 +26,8 @@ export class Download extends EventEmitter<{
 		completedFilesLength: number;
 		pourcentage: number;
 	}[];
+	public totalContentFilesSizeHumanized!: string;
+	public contentPeers!: Peers[];
 	public totalPourcentage: number = 0;
 	public finished: boolean = false;
 
@@ -62,8 +65,9 @@ export class Download extends EventEmitter<{
 			})) as string;
 
 			// Trying to get the status of the download of the torrent
-			await wait(1000);
+			await wait(2500);
 			this.torrentStatus = await aria2.call("tellStatus", this.torrentId);
+			this.emit("start");
 
 			// Checking if the download of the torrent is followed by another download
 			// if so, we wait for the download of the content to start
@@ -71,7 +75,7 @@ export class Download extends EventEmitter<{
 				this.torrentStatus.files[0].path == "" &&
 				!this.torrentStatus.followedBy
 			) {
-				await wait(1000);
+				await wait(500);
 				this.torrentStatus = await aria2.call(
 					"tellStatus",
 					this.torrentId,
@@ -84,18 +88,18 @@ export class Download extends EventEmitter<{
 				? this.torrentStatus.followedBy[0]
 				: this.torrentId;
 
+			await wait(1500);
 			this.content = await aria2.call("tellStatus", this.contentId);
-
-			this.emit("start", this.content);
-			this.startMonitorDownload(this.content);
+			this.startMonitorDownload();
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-	private async startMonitorDownload(torrentFileStatus: TellStatus) {
+	private async startMonitorDownload() {
 		this.fileStatusInterval = setInterval(async () => {
 			this.contentStatus = await aria2.call("tellStatus", this.contentId);
+			this.contentPeers = await aria2.call("getPeers", this.contentId);
 
 			// If the download of the content has an error status, we emit the error event
 			// and remove the download
@@ -124,6 +128,16 @@ export class Download extends EventEmitter<{
 							100,
 					) || 0,
 			}));
+
+			this.totalContentFilesSizeHumanized = `${(
+				this.contentFilesStatus.reduce(
+					(acc, file) => acc + file.totalFilesLength,
+					0,
+				) /
+				1024 /
+				1024 /
+				1024
+			).toFixed(2)} GB`;
 
 			// Calculating the total pourcentage of all the files
 			this.totalPourcentage =
