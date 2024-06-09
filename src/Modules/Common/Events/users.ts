@@ -1,7 +1,6 @@
 import Event from "@/Classes/Event";
 import { Prisma } from "@/Services/prisma.service";
 import Dotenv from "@/Utils/Dotenv";
-import moment from "moment";
 
 export const RegisterUsersOnInit = new Event<"ready">("ready").setHandler(
 	async (client) => {

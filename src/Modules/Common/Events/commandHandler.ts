@@ -1,11 +1,10 @@
 import Event from "@/Classes/Event";
 import { PermissionsService } from "@/Modules/Permissions/permissions.service";
-import { Prisma } from "@/Services/prisma.service";
 import {
+	BaseMessageOptions,
 	Colors,
 	EmbedBuilder,
 	GuildMember,
-	BaseMessageOptions,
 } from "discord.js";
 
 export const CommandHandlerEvent = new Event<"interactionCreate">(
