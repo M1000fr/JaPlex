@@ -51,11 +51,11 @@ export class JackettClient {
 			);
 
 		// remove duplicates by size of the torrent
-		const seen: any = {};
+		const seen: { [key: string]: boolean } = {};
 
-		data.Results = data.Results.filter((result: any) => {
-			if (seen[result.Size]) return false;
-			seen[result.Size] = true;
+		data.Results = data.Results.filter((result) => {
+			if (seen[result.Size + result.Title]) return false;
+			seen[result.Size + result.Title] = true;
 			return true;
 		});
 

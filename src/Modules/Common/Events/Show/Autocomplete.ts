@@ -13,13 +13,14 @@ export const ShowAutocomplete = new Event<"interactionCreate">(
 	)
 		return;
 
+	// check if the scope is show_id
 	// Get the focused option
-	const focus = interaction.options.getFocused();
-	if (!focus) return;
+	const focus = interaction.options.getFocused(true);
+	if (!focus || focus.name != "show_id") return;
 
 	// Search for movies from TMDB
 	const shows = await tmdb.search.tvShows({
-		query: focus,
+		query: focus.value,
 		language: Dotenv.PLEX_LANGUAGE,
 		include_adult: true,
 	});

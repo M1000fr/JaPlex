@@ -50,12 +50,14 @@ export const plexCommandOptions = new SlashCommandBuilder()
 						option
 							.setName("season")
 							.setDescription("Season number")
+							.setAutocomplete(true)
 							.setRequired(false),
 					)
 					.addIntegerOption((option) =>
 						option
 							.setName("episode")
 							.setDescription("Episode number")
+							.setAutocomplete(true)
 							.setRequired(false),
 					),
 			),

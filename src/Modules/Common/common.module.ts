@@ -3,6 +3,9 @@ import { PlexCommand } from "./Commands/add";
 import { PingCommand } from "./Commands/ping";
 import { bookChangePageEvent } from "./Events/book";
 
+import { ShowAutocomplete } from "./Events/Show/Autocomplete";
+import { ShowSeasonAutocomplete } from "./Events/Show/SeasonAutocomplete";
+import { ShowSeasonEpisodeAutocomplete } from "./Events/Show/SeasonEpisodeAutocomplete";
 import { CommandHandlerEvent } from "./Events/commandHandler";
 import { downloadTorrentButtonEvent } from "./Events/download";
 import { HelloEvent } from "./Events/hello";
@@ -12,7 +15,6 @@ import {
 	RegisterRolesOnInit,
 	UnregisterRoleOnDelete,
 } from "./Events/roles";
-import { ShowAutocomplete } from "./Events/showAutocomplete";
 import { RegisterUsersOnInit } from "./Events/users";
 
 export const commonModule: Module = new Module("Common")
@@ -35,5 +37,7 @@ export const commonModule: Module = new Module("Common")
 
 		MovieAutocomplete,
 		ShowAutocomplete,
+		ShowSeasonAutocomplete,
+		ShowSeasonEpisodeAutocomplete,
 	])
 	.addCommands([PingCommand, PlexCommand]);
